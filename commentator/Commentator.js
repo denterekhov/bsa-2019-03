@@ -2,6 +2,7 @@ const RaceStartMessage = require('./RaceStartMessage.js');
 const Every30SecondsMessage = require('./Every30SecondsMessage.js');
 const BeforeFinishMessage = require('./BeforeFinishMessage.js');
 const FinishMessage = require('./FinishMessage.js');
+const RaceEndMessage = require('./RaceEndMessage.js');
 
 class Commentator {
     constructor(io) {
@@ -23,7 +24,7 @@ class Commentator {
                 return (new FinishMessage).createNewMessage(users);
 
             case 'race end':
-                return (new RaceEndMessage).createNewMessage();
+                return (new RaceEndMessage).createNewMessage(users);
         }
     }
 

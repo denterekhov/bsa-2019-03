@@ -119,8 +119,6 @@ progress::-moz-progress-bar {
     position: absolute;
     top: 0;
     right: 50px;
-    /* width: 200px; */
-    /* height: 50px; */
 }
 
 #commentator img {

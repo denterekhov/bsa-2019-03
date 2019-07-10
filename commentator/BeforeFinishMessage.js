@@ -4,7 +4,6 @@ class BeforeFinishMessage {
     }
 
     createNewMessage(users) {
-        console.log('users: ', users);
         const firstPlace = `До финиша осталось совсем немного и похоже, что первым его может пересечь ${users[0].user} из команды Atom на своем белом ${users[0].car}.`
         let secondPlace = '',
             thirdPlace = '';

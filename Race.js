@@ -38,6 +38,7 @@ class Race {
                     
                     this.users.forEach(user => {
                         user.userCurrentProgress = '0.0';
+                        user.timeSpent = 0;
                     })
 
                     const timeToEnd = this.timeToEnd;
@@ -50,6 +51,7 @@ class Race {
                     }
 
                     const timeToEnd = this.timeToEnd;
+                    this.commentator.sendMessage('race end', this.users);
                     this.io.emit('stop race', { timeToEnd: 120000 });
                 }
             };
@@ -64,7 +66,8 @@ class Race {
         this.users.push({
             user,
             car,
-            userCurrentProgress: 0
+            userCurrentProgress: 0,
+            timeSpent: 0
         });
     };
 
@@ -86,7 +89,7 @@ class Race {
                 userCurrentProgress: currentProgress
             } 
             : user;        
-        });
+        }).sort((a, b) => b.userCurrentProgress - a.userCurrentProgress);
         
         this.users = sortedUsers;
         this.io.emit('update progress', this.users);
@@ -95,7 +98,7 @@ class Race {
     userDisconnected(userName) {
         this.users.forEach(user => {
             if(user.user === userName) {
-                user.userCurrentProgress === 'Offline'
+                user.userCurrentProgress = 'Offline'
             }
         })
     }
@@ -110,8 +113,13 @@ class Race {
             this.commentator.sendMessage('before finish', this.users);
         }
     }
-
-    createFinishMessage(login) {
+    
+    createFinishMessage({ login, timeSpent }) {
+        this.users.forEach(user => {
+            if(user.user === login) {
+                user.timeSpent = timeSpent;
+            }
+        })
         this.commentator.sendMessage('user finished', login);
     }
 }

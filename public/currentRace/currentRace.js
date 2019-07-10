@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
             socket.emit('user disconnected', { token: jwt });
         });
 
-        socket.emit('user logged');
+        socket.emit('user logged',  { token: jwt });
         socket.emit('first race', { token: jwt });
 
         let randomText,
@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         socket.on('start race', ({ timeToEnd: time, users }) => {
+            const startTime = time;
             document.body.innerHTML = 
             `<div class="container">
                 <div class="text">
@@ -36,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <h4 id='timeToRaceEnd'></h4>
                 <div id='commentator'>
-                    <p id='commentator_text'>Под номером выступает на своем., На улице сейчас немного пасмурно, но на Львов Арена сейчас просто замечательная атмосфера: двигатели рычат, зрители улыбаются, а гонщики едва заметно нервничают и готовят своих железных коней к гонке. А комментировать всё это действо для вас буду я, Эскейп Энтерович и я рад вас приветствовать словами "Доброго дня, господа!". А тем временем, список гонщиков. Итак...</p>
+                    <p id='commentator_text'></p>
                     <img src="./comment.jpg" alt="commentator" />
                 </div>
             </div>`;
@@ -84,8 +85,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     socket.emit('30 chars to finish', { token: jwt });
                 }
 
-                if(randomTextLength === currentPosition + 1) {
-                    socket.emit('user finished', { token: jwt });
+                if(randomTextLength === currentPosition) {
+                    const timeSpent = Math.floor((startTime - time)/1000);
+                    socket.emit('user finished', { token: jwt, timeSpent });
                 }
             };
             document.addEventListener('keypress', typing);
@@ -152,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         : 'The next race starts in: 00:00';
                     clearInterval(timerId);
                     if(isRaceRunning) {
-                      socket.emit('first race', { token: jwt });
+                        socket.emit('first race', { token: jwt });
                     }
                 };
             }, second);
